@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Trembit - Red5Pro delay Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://webrtchacks.github.io/adapter/adapter-latest.js"></script>
+</head>
+<body>
+<div class="header">
+    <div class="header_container">
+        <img id="red5pro-logo" height="50px" src="images/Red5Pro_SME.png" alt="red5pro_logo">
+        <img height="50px" src="images/logo_trembit.png" alt="trembit_logo">
+        <img height="50px" src="images/CDNetworks_SME.png" alt="trembit_logo">
+    </div>
+</div>
+<div class="container">
+
+    <div class="info-string" id="info-string">
+        <div class="lds-ellipsis" id="spinner">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div id="delay-time" class="delay-time">
+            <span>Latency:</span>
+            <span id="delay">0</span>
+        </div>
+    </div>
+    <div id="main">
+        <div class="publisher">
+            <div id="timer" class="clock">0</div>
+            <video id="red5pro-publisher" autoplay muted></video>
+            <iframe id="customVideo" width="560" height="315"
+                    src="https://www.youtube.com/embed/DGQwd1_dpuc?controls=0&loop=1&autoplay=1&playlist=DGQwd1_dpuc"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"></iframe>
+        </div>
+        <div class="subscriber">
+            <video id="red5pro-subscriber" autoplay></video>
+        </div>
+    </div>
+    <div class="places">
+        <div class="publish-place">New York</div>
+        <select name="server" id="server" onchange="chooseServer()">
+            <option value="//192.168.1.37" >Paris</option> <!--TODO change server-->
+            <option value="//release.red5.org" selected>London</option> <!--TODO change server-->
+        </select>
+    </div>
+    <div class="error" id="error">
+        Maybe your camera can`t recognize the numbers. Position the camera so that the numbers occupy the entire screen.
+    </div>
+</div>
+
+<script src='https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js'></script>
+<script type="text/javascript" src="scripts/main.js"></script>
+<script async type="text/javascript" src="scripts/red5pro-sdk.min.js"></script>
+</body>
+</html>
