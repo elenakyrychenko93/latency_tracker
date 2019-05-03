@@ -81,11 +81,11 @@ body {
     letter-spacing: -1px;
 }
 
-.error {
+.recognizeError, .anotherError {
     display: none;
 }
 
-.error.active {
+.recognizeError.active, .anotherError.active {
     display: block;
     font-size: 16px;
     max-width: 600px;

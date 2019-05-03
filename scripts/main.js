@@ -8,11 +8,14 @@ let spinner = document.getElementById("spinner");
 let server = document.getElementById('server');
 let timer = document.getElementById("timer");
 let delay = document.getElementById("delay");
-let error = document.getElementById('error');
+let recognizeError = document.getElementById('recognize_error');
+// let anotherError = document.getElementById('another_error');
 let serverURL = '//release.red5.org'; //TODO change server
 
 window.onload = () => {
     initStream = (serverURL) => {
+        let streamName = 'red5proLatency' + Math.round(1 - 0.5 + Math.random() * (10000 - 1 + 1));
+
         ((red5prosdk) => {
 
             let publisher = new red5prosdk.RTCPublisher();
@@ -24,7 +27,7 @@ window.onload = () => {
                 port: 8083,
                 iceServers: [{urls: 'stun:stun2.l.google.com:19302'}],
                 app: 'live',
-                streamName: "mystream",
+                streamName: streamName,
                 mediaElementId: 'red5pro-publisher',
                 bandwidth: {
                     audio: 56,
@@ -85,9 +88,9 @@ window.onload = () => {
                     port: 8083,
                     iceServers: [{urls: 'stun:stun2.l.google.com:19302'}],
                     app: 'live',
-                    streamName: "mystream",
+                    streamName: streamName,
                     mediaElementId: 'red5pro-subscriber',
-                    subscriptionId: 'mystream'
+                    subscriptionId: streamName
                 })
                     .then((subscriber) => {
                         console.log('Subscribe');
@@ -103,7 +106,7 @@ window.onload = () => {
                         showDelayTime();
                     })
                     .catch(function (error) {
-                        console.error(error)
+                        console.error(error);
                     });
             };
         })(window.red5prosdk);
@@ -127,8 +130,8 @@ hideInfoString = () => infoString.classList.remove("active");
 showDelayTime = () => delayTime.classList.add("active");
 hideDelayTime = () => delayTime.classList.remove("active");
 
-showError = () => error.classList.add("active");
-hideError = () => error.classList.remove("active");
+showError = (errorType) => errorType.classList.add("active");
+hideError = (errorType) => errorType.classList.remove("active");
 
 showTime = () => {
     let startTime = Date.now();
@@ -160,17 +163,17 @@ calculateDelay = (currentTime, result) => {
     console.log(currentTime, result);
     let delayTime = currentTime - result;
     if (!isNaN(currentTime) && !isNaN(result) && result && result !== '') {
-        hideError();
+        hideError(recognizeError);
         delayTime < 0.1 ? delay.childNodes[0].nodeValue = "less than 100 milliseconds" :
             delay.childNodes[0].nodeValue = (delayTime * 1000).toFixed(0) + ' milliseconds';
     } else if (delayTime > 10) {
         spinner.classList.add("active");
     }
     else if (isNaN(result)) {
-        showError();
+        showError(recognizeError); //Can use anotherError like showError(anotherError) in any place
     }
     else {
-        hideError();
+        hideError(recognizeError);
         spinner.classList.add("active");
     }
 };
