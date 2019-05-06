@@ -10,7 +10,7 @@ let timer = document.getElementById("timer");
 let delay = document.getElementById("delay");
 let recognizeError = document.getElementById('recognize_error');
 // let anotherError = document.getElementById('another_error');
-let serverURL = '//release.red5.org'; //TODO change server
+let serverURL = '//red5pro.trembit.com';
 
 window.onload = () => {
     initStream = (serverURL) => {
