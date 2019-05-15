@@ -10,6 +10,7 @@ let city = document.getElementById("publish-place");
 let container = document.getElementById("container");
 let errorResolution = "Your`s webCam doesn`t supports this resolution. Please, choose resolution lower.";
 let vids = document.getElementsByTagName('video');
+let spinner = document.getElementById("spinner");
 
 let sizes = [
     {width: 320, height: 240, className: 'smallest'},
@@ -34,6 +35,7 @@ let overlay;
 window.onload = () => {
     initStream = (serverURL) => {
         hideError();
+        activateSpinner();
         let streamName = 'red5proLatency' + Math.round(1 - 0.5 + Math.random() * (10000 - 1 + 1));
         ((red5prosdk) => {
 
@@ -76,9 +78,6 @@ window.onload = () => {
                         console.groupEnd();
                     });
                     console.log('publish');
-                    removeContainerSize();
-                    setContainerSize(currentSize.className);
-                    setMainBlockStyles();
                     return publish();
                 }).catch((error) => {
                     console.log('getUserMedia error!', error);
@@ -126,6 +125,11 @@ window.onload = () => {
                         console.log('Subscribed');
                         removeVideoSize();
                         setVideoSize(currentVideoClass);
+                        removeContainerSize();
+                        setContainerSize(currentSize.className);
+                        setMainBlockStyles();
+                        setTimeout(deactivateSpinner(), 3000);
+
                         // initSingular();
                         // setSingular('0gLC3KNfPudPCd04dNl4DQ');
                     })
@@ -184,6 +188,16 @@ removeVideoSize = () => {
     }
 };
 
+activateSpinner = () => {
+    if(!spinner.classList.contains('active')) {
+        spinner.classList.add('active')
+    }
+};
+
+deactivateSpinner = () => {
+    spinner.classList.remove('active')
+};
+
 showError = (errorText) => {
     error.classList.add("active");
     error.innerHTML = errorText;
@@ -215,6 +229,7 @@ setSingular = (compToken) => {
 };
 
 chooseServer = () => {
+    activateSpinner();
     clearSub().then(() => {
         let index = server.selectedIndex;
         let options = server.options;
@@ -225,6 +240,7 @@ chooseServer = () => {
 };
 
 chooseVideoSize = () => {
+    activateSpinner();
     clearSub().then(() => {
         let index = size.selectedIndex;
         let options = size.options;
@@ -237,6 +253,7 @@ chooseVideoSize = () => {
 };
 
 defineSize = (width) => {
+    activateSpinner();
     switch (width) {
         case '320':
             return sizes[0];
@@ -267,4 +284,8 @@ chooseQuality = () => {
 
 getCity = (data) => {
     city.innerText = data.city;
+};
+
+takeScreenshot = () => {
+
 };

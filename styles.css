@@ -8,6 +8,7 @@ body {
 .container {
     /*max-width: 1500px;*/
     /*min-width: 1100px;*/
+    position: relative;
     margin: 15px auto;
     padding: 20px 40px 30px;
     background: url("images/dot.png") repeat;
@@ -270,6 +271,23 @@ pre {
     font-family: sans-serif;
 }
 
+#spinner {
+    /*position: absolute;*/
+    /*top: 0px;*/
+    left: 50%;
+    transform: translateX(-50%);
+    vertical-align: middle;
+    display: none;
+}
+
+#spinner.active {
+    display: inline-block;
+}
+
+#spinner.active.center {
+    top: 0px;
+}
+
 .lds-ellipsis {
     display: inline-block;
     position: relative;
@@ -336,23 +354,6 @@ pre {
     100% {
         transform: translate(19px, 0);
     }
-}
-
-#spinner {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    vertical-align: middle;
-    display: none;
-}
-
-#spinner.active {
-    display: inline-block;
-}
-
-#spinner.active.center {
-    top: 0px;
 }
 
 .places {
@@ -424,4 +425,27 @@ video.large {
 
 #error.active {
     display: block;
+}
+
+@media (max-width: 1380px) {
+    .container {
+        width: auto!important;
+        max-width: 100%;
+    }
+    video {
+        max-width: 100%;
+        height: auto!important;
+    }
+}
+
+@media (max-width: 767px) {
+    .header_container {
+        flex-direction: column;
+    }
+    .header_container>* {
+        margin: 10px;
+    }
+    #main {
+        flex-direction: column;
+    }
 }
