@@ -1,21 +1,38 @@
-let milisec;
-let result;
-let ticInterval;
-let screenInterval;
-let infoString = document.getElementById("info-string");
-let delayTime = document.getElementById('delay-time');
-let spinner = document.getElementById("spinner");
+let serverURL = '//cdnetworks-paris.red5.org';
 let server = document.getElementById('server');
+let size = document.getElementById('size');
+let quality = document.getElementById('quality');
 let timer = document.getElementById("timer");
 let delay = document.getElementById("delay");
-let recognizeError = document.getElementById('recognize_error');
-// let anotherError = document.getElementById('another_error');
-let serverURL = '//cdnetworks-paris.red5.org';
+let error = document.getElementById("error");
+let main = document.getElementById("main");
+let errorResolution = "Your`s webCam doesn`t supports this resolution. Please, choose resolution lower.";
+let vids = document.getElementsByTagName('video');
+
+let sizes = [
+    {width: 320, height: 240, className: 'smallest'},
+    {width: 640, height: 480, className: 'small'},
+    {width: 1280, height: 720, className: 'medium'},
+    {width: 1920, height: 1080, className: 'large'}
+];
+let currentSize = {width: 640, height: 480};
+let currentQuality = 512;
+let currentVideoClass = 'small';
+
+let options = {
+    class: 'iFrameClass',
+    endpoint: 'http://app.singular.live',
+    interactive: true,
+    syncGraphics: false,
+    showPreloader: false,
+    aspect: ''
+};
+let overlay;
 
 window.onload = () => {
     initStream = (serverURL) => {
+        hideError();
         let streamName = 'red5proLatency' + Math.round(1 - 0.5 + Math.random() * (10000 - 1 + 1));
-
         ((red5prosdk) => {
 
             let publisher = new red5prosdk.RTCPublisher();
@@ -28,20 +45,18 @@ window.onload = () => {
                 iceServers: [{urls: 'stun:stun2.l.google.com:19302'}],
                 app: 'live',
                 streamName: streamName,
-                mediaElementId: 'red5pro-publisher',
+                mediaElementId: 'publisher',
                 bandwidth: {
                     audio: 56,
-                    video: 512
+                    video: currentQuality
                 },
                 mediaConstraints: {
                     audio: true,
                     video: {
-                        width: {
-                            exact: 640
-                        },
-                        height: {
-                            exact: 480
-                        },
+                        width: currentSize.width
+                        ,
+                        height: currentSize.height
+                        ,
                         frameRate: {
                             min: 8,
                             max: 24
@@ -49,13 +64,23 @@ window.onload = () => {
                     }
                 }
             }).then((rtcPublisherReference) => {
-                rtcPublisherReference.on('*', event => {
-                    console.groupCollapsed(`[rtcPublisher] ${event.type}`);
-                    console.log(event);
-                    console.groupEnd();
+                navigator.mediaDevices.getUserMedia({
+                    video: {width: {min: currentSize.width}, height: {min: currentSize.height}}
+                }).then((stream) => {
+                    publisher.srcObject = stream;
+                    rtcPublisherReference.on('*', event => {
+                        console.groupCollapsed(`[rtcPublisher] ${event.type}`);
+                        console.log(event);
+                        console.groupEnd();
+                    });
+                    console.log('publish');
+                    setMainBlockStyles();
+                    return publish();
+                }).catch((error) => {
+                    console.log('getUserMedia error!', error);
+                    showError(errorResolution);
                 });
-                console.log('publish');
-                return publish();
+
             })
                 .catch(function (error) {
                     console.error(error);
@@ -68,8 +93,6 @@ window.onload = () => {
 
             window.unpublish = () => {
                 publisher.unpublish().then(() => {
-                    stopTimer();
-                    stopScreenInterval();
                     console.log('unpublished');
                 });
             };
@@ -77,7 +100,6 @@ window.onload = () => {
             window.unsubscribe = () => {
                 subscriber.unsubscribe().then(() => {
                     console.log('Unsubscribed');
-                    hideInfoString();
                 });
             };
 
@@ -89,7 +111,7 @@ window.onload = () => {
                     iceServers: [{urls: 'stun:stun2.l.google.com:19302'}],
                     app: 'live',
                     streamName: streamName,
-                    mediaElementId: 'red5pro-subscriber',
+                    mediaElementId: 'subscriber',
                     subscriptionId: streamName
                 })
                     .then((subscriber) => {
@@ -97,122 +119,139 @@ window.onload = () => {
                         return subscriber.subscribe();
                     })
                     .then((subscriber) => {
-                        console.log('Subscribed', subscriber);
-                        spinner.classList.remove("active");
-                        spinner.classList.remove("center");
-                        showTime();
-                        makeScreens();
-                        showInfoString();
-                        showDelayTime();
+                        console.log('Subscribed');
+                        removeSize();
+                        setSize(currentVideoClass);
+                        // initSingular();
+                        // setSingular('0gLC3KNfPudPCd04dNl4DQ');
                     })
                     .catch(function (error) {
                         console.error(error);
                     });
             };
+
         })(window.red5prosdk);
     };
     initStream(serverURL);
-
+    // initStreams();
 };
 
 window.addEventListener('beforeunload', (event) => {
     event.returnValue = clearSub();
 });
 
+// async function initStreams() {
+//     await initStream('//cdnetworks-paris.red5.org', 'publisher', 'subscriber');
+//     await initStream('//cdnetworks-la.red5.org', 'publisher2', 'subscriber2');
+// }
+
 async function clearSub() {
+    // overlay.hide();
+
     await window.unsubscribe();
     await window.unpublish();
 }
 
-showInfoString = () => infoString.classList.add("active");
-hideInfoString = () => infoString.classList.remove("active");
+setMainBlockStyles = () => {
+    if(currentSize.width>=1280) {
+        main.classList.remove("large");
+        main.classList.add("large");
+    } else {
+        main.classList.remove("large");
+    }
+};
 
-showDelayTime = () => delayTime.classList.add("active");
-hideDelayTime = () => delayTime.classList.remove("active");
+setSize = (sizeClass) => {
+    vids[0].classList.add(sizeClass);
+    vids[1].classList.add(sizeClass);
+};
 
-showError = (errorType) => errorType.classList.add("active");
-hideError = (errorType) => errorType.classList.remove("active");
-
-showTime = () => {
-    let startTime = Date.now();
-    ticInterval = setInterval(function () {
-        let elapsedTime = Date.now() - startTime;
-        if (elapsedTime > 99999) {
-            startTime = Date.now();
+removeSize = () => {
+    for (let i = 0; i < sizes.length; i++) {
+        console.log(sizes[i].className);
+        if (vids[0].classList.contains(sizes[i].className)) {
+            vids[0].classList.remove(sizes[i].className);
         }
-        timer.innerHTML = (elapsedTime / 1000).toFixed(2);
-    }, 10)
-};
-
-stopTimer = () => {
-    clearInterval(ticInterval);
-    milisec = 0;
-    timer.childNodes[0].nodeValue = milisec;
-};
-
-stopScreenInterval = () => {
-    clearInterval(screenInterval);
-};
-
-makeScreens = () => {
-    screenInterval = setInterval(recognizeScreen, 3000);
-};
-
-calculateDelay = (currentTime, result) => {
-    spinner.classList.remove("active");
-    console.log(currentTime, result);
-    let delayTime = currentTime - result;
-    if (!isNaN(currentTime) && !isNaN(result) && result && result !== '') {
-        hideError(recognizeError);
-        delayTime < 0.1 ? delay.childNodes[0].nodeValue = "less than 100 milliseconds" :
-            delay.childNodes[0].nodeValue = (delayTime * 1000).toFixed(0) + ' milliseconds';
-    } else if (delayTime > 10) {
-        spinner.classList.add("active");
-    }
-    else if (isNaN(result)) {
-        showError(recognizeError); //Can use anotherError like showError(anotherError) in any place
-    }
-    else {
-        hideError(recognizeError);
-        spinner.classList.add("active");
     }
 };
 
-progressUpdate = (packet) => {
-    let status = document.createElement('div');
-    status.className = 'status';
-    status.appendChild(document.createTextNode(packet.status));
-    if (packet.status == 'done') {
-        result = packet.data.text;
-    }
+showError = (errorText) => {
+    error.classList.add("active");
+    error.innerHTML = errorText;
 };
 
-recognizeScreen = () => {
-    let currentTime = timer.innerHTML;
-    let screenshot = document.getElementById("red5pro-subscriber");
-    Tesseract.recognize(screenshot)
-        .progress(function (packet) {
-            progressUpdate(packet);
-            spinner.classList.add("active");
-        })
-        .then(function (data) {
-            progressUpdate({status: 'done', data: data});
-            calculateDelay(currentTime, result);
-        })
+hideError = () => {
+    error.innerHTML = "";
+    error.classList.remove("active");
+};
+
+initSingular = () => {
+    overlay = SingularOverlay('#SingularOverlay', options, (params) => {
+        console.log("Singular Overlay Init - Success");
+    });
+};
+
+setSingular = (compToken) => {
+    overlay.setContent({
+        compToken: compToken
+    }, (params) => {
+        // called when content finished loading
+        // console.log('delay', params);
+        // overlay.setDelay(5500);
+
+        console.log("Singular Overlay Content Loaded - Success");
+    });
+    // overlay.setDelay(5500);
+    overlay.videoSegment(4000); //looks like max delay 4000
 };
 
 chooseServer = () => {
-    hideDelayTime();
-
     clearSub().then(() => {
-        showInfoString();
-        spinner.classList.add("active");
-        spinner.classList.add("center");
-
         let index = server.selectedIndex;
         let options = server.options;
-
         serverURL = options[index].value;
         initStream(serverURL);
+        console.log('server URL:', serverURL);
+    });
+};
+
+chooseVideoSize = () => {
+    clearSub().then(() => {
+        let index = size.selectedIndex;
+        let options = size.options;
+        let width = options[index].value;
+        currentSize = defineSize(width);
+        currentVideoClass = defineSize(width).className;
+        initStream(serverURL);
+        console.log('current Size:', currentSize);
+    });
+};
+
+defineSize = (width) => {
+    switch (width) {
+        case '320':
+            return sizes[0];
+            break;
+        case '640':
+            return sizes[1];
+            break;
+        case '1280':
+            return sizes[2];
+            break;
+        case '1920':
+            return sizes[3];
+            break;
+        default:
+            alert('Я таких значений не знаю');
+    }
+};
+
+chooseQuality = () => {
+    clearSub().then(() => {
+        let index = quality.selectedIndex;
+        let options = quality.options;
+        currentQuality = options[index].value;
+        initStream(serverURL);
+        console.log('current Quality:', currentQuality);
     });
 };

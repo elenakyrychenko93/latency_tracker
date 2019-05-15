@@ -5,6 +5,8 @@
     <title>Trembit - Red5Pro delay Test</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://webrtchacks.github.io/adapter/adapter-latest.js"></script>
+    <script src="https://app.singular.live/libs/singularoverlay/0.1.0/singularoverlay.js"></script>
+
 </head>
 <body>
 <div class="header">
@@ -15,46 +17,65 @@
     </div>
 </div>
 <div class="container">
-
-    <div class="info-string" id="info-string">
-        <div class="lds-ellipsis" id="spinner">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+    <div class="toggle-block">
+        <div>
+            <h3>Video quality</h3>
+            <select name="quality" id="quality" onchange="chooseQuality()">
+                <option value="256">256</option>
+                <option value="512" selected>512</option>
+                <option value="1024">1024</option>
+                <option value="2048">2048</option>
+            </select>
         </div>
-        <div id="delay-time" class="delay-time">
-            <span>Latency:</span>
-            <span id="delay">0</span>
+
+        <div>
+            <h3>Video size</h3>
+            <select name="size" id="size" onchange="chooseVideoSize()">
+                <option value="320">320:240</option>
+                <option value="640" selected>640:480</option>
+                <option value="1280">1280:720</option>
+                <option value="1920">1920:1080</option>
+            </select>
         </div>
     </div>
-    <div id="main">
+    <div id="error" class="error"></div>
+
+    <div id="main" class="main">
         <div class="publisher">
-            <div id="timer" class="clock">0</div>
-            <video id="red5pro-publisher" autoplay muted></video>
-            <iframe id="customVideo" width="560" height="315"
-                    src="https://www.youtube.com/embed/DGQwd1_dpuc?controls=0&loop=1&autoplay=1&playlist=DGQwd1_dpuc"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"></iframe>
+            <video id="publisher" class="" autoplay muted></video>
+            <!--<iframe id="customVideo" width="560" height="315"-->
+            <!--src="https://www.youtube.com/embed/DGQwd1_dpuc?loop=1&autoplay=1&enablejsapi=1&playlist=DGQwd1_dpuc"-->
+            <!--frameborder="0"-->
+            <!--allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"></iframe>-->
         </div>
         <div class="subscriber">
-            <video id="red5pro-subscriber" autoplay></video>
+            <!--<div id="SingularOverlay"></div>-->
+            <video id="subscriber" class="" autoplay muted></video>
         </div>
     </div>
+
+    <!--<div class="main">-->
+    <!--<div class="publisher">-->
+    <!--<video id="publisher2" autoplay muted></video>-->
+    <!--</div>-->
+    <!--<div class="subscriber">-->
+    <!--<video id="subscriber2" autoplay muted></video>-->
+    <!--</div>-->
+    <!--</div>-->
+
     <div class="places">
         <div class="publish-place">New York</div>
         <select name="server" id="server" onchange="chooseServer()">
             <option value="//cdnetworks-paris.red5.org" selected>Paris</option>
-            <option value="//cdnetworks-nyc.red5.org" >New York</option>
-            <option value="//cdnetworks-la.red5.org" >Los Angeles</option>
+            <option value="//cdnetworks-la.red5.org">Los Angeles</option>
         </select>
     </div>
-    <div class="recognizeError" id="recognize_error">
-        Maybe your camera can`t recognize the numbers. Position the camera so that the numbers occupy the entire screen.
-    </div>
-   <!--<div class="anotherError" id="another_error">-->
-       <!--Another error-->
-   <!--</div>-->
+
+
+    <!--<div class="places">-->
+    <!--<div class="publish-place">New York</div>-->
+    <!--<div class="publish-place">Paris</div>-->
+    <!--</div>-->
 </div>
 
 <script src='https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js'></script>

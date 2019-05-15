@@ -6,11 +6,25 @@ body {
 }
 
 .container {
-    max-width: 1380px;
-    min-width: 1100px;
+    /*max-width: 1500px;*/
+    /*min-width: 1100px;*/
     margin: 15px auto;
-    padding: 20px 40px 30px;
+    /*padding: 20px 40px 30px;*/
     background: url("images/dot.png") repeat;
+}
+
+h3 {
+    display: block;
+    margin: 0 0 20px;
+}
+
+.toggle-block {
+    color: white;
+    display: flex;
+}
+
+.toggle-block>div {
+    margin: 0 20px 20px;
 }
 
 .header {
@@ -18,7 +32,7 @@ body {
 }
 
 .header_container {
-    max-width: 1380px;
+    max-width: 1600px;
     padding: 20px 40px;
     margin: auto;
     display: flex;
@@ -123,18 +137,27 @@ body {
 
 .publisher {
     position: relative;
-    width: 735px;
-    max-width: 100%;
+    display: inline-block;
+    text-align: center;
+    /*width: 735px;*/
+    /*max-width: 100%;*/
+    /*width: 640px;*/
+    /*height: 480px;*/
 }
 
 .subscriber {
-    margin-left: 20px;
+    position: relative;
+    /*margin-left: 20px;*/
+    display: inline-block;
+    text-align: center;
 }
 
 #red5pro-publisher {
-    display: none;
+    /*display: none;*/
 }
-
+/*.red5pro-media-container {*/
+/*width: 100%;*/
+/*}*/
 #transcription {
     background: #f9f9f9;
     display: inline-block;
@@ -144,15 +167,19 @@ body {
 
 #video {
     flex-grow: 1;
-    width: 500px;
+    /*width: 500px;*/
+    /*width: 640px;*/
+    /*height: 480px;*/
     background: black;
 }
 
 #customVideo {
-    min-height: 415px;
-    width: 735px;
-    max-width: 100%;
-    height: 100%;
+    /*min-height: 415px;*/
+    /*width: 735px;*/
+    /*max-width: 100%;*/
+    /*height: 100%;*/
+    /*width: 640px;*/
+    /*height: 480px;*/
 }
 
 #log {
@@ -180,10 +207,16 @@ body {
     background: #2f2f2f;
 }
 
-#main {
+.main {
     display: flex;
+    max-width: 1920px;
+    margin: auto;
     position: relative;
-    justify-content: space-between;
+    justify-content: space-around;
+}
+
+.main.large {
+    flex-direction: column;
 }
 
 #transcription.recognizing {
@@ -218,8 +251,8 @@ body {
 }
 
 #customVideo video {
-    width: 640px;
-    height: 480px;
+    /*width: 640px;*/
+    /*height: 480px;*/
     margin-top: 110px;
 }
 
@@ -317,7 +350,8 @@ pre {
 .places {
     display: flex;
     justify-content: space-between;
-    padding: 20px;
+    padding: 20px 50px;
+    font-size: 16px;
     color: #adadad;
     font-weight: bold;
 }
@@ -339,4 +373,47 @@ option {
     color: #adadad;
     font-weight: bold;
     border: none;
+}
+
+.img {
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+}
+
+video {
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    /*width: 1920px;*/
+    /*height: 1080px;*/
+}
+video.smallest {
+    width: 320px;
+    height: 240px;
+}
+video.small {
+    width: 640px;
+    height: 480px;
+}
+video.medium {
+    width: 1280px;
+    height: 720px;
+}
+video.large {
+    width: 1920px;
+    height: 1080px;
+}
+
+#error {
+    color: #e42b25;
+    padding: 20px 0;
+    font-size: 23px;
+    font-weight: bold;
+    text-align: center;
+    display: none;
+}
+
+#error.active {
+    display: block;
 }
