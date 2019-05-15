@@ -16,7 +16,7 @@
         <img height="50px" src="images/CDNetworks_SME.png" alt="trembit_logo">
     </div>
 </div>
-<div class="container">
+<div id="container" class="container">
     <div class="toggle-block">
         <div>
             <h3>Video quality</h3>
@@ -43,43 +43,24 @@
     <div id="main" class="main">
         <div class="publisher">
             <video id="publisher" class="" autoplay muted></video>
-            <!--<iframe id="customVideo" width="560" height="315"-->
-            <!--src="https://www.youtube.com/embed/DGQwd1_dpuc?loop=1&autoplay=1&enablejsapi=1&playlist=DGQwd1_dpuc"-->
-            <!--frameborder="0"-->
-            <!--allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"></iframe>-->
         </div>
         <div class="subscriber">
             <!--<div id="SingularOverlay"></div>-->
             <video id="subscriber" class="" autoplay muted></video>
         </div>
     </div>
-
-    <!--<div class="main">-->
-    <!--<div class="publisher">-->
-    <!--<video id="publisher2" autoplay muted></video>-->
-    <!--</div>-->
-    <!--<div class="subscriber">-->
-    <!--<video id="subscriber2" autoplay muted></video>-->
-    <!--</div>-->
-    <!--</div>-->
-
     <div class="places">
-        <div class="publish-place">New York</div>
+        <div id="publish-place" class="publish-place">New York</div>
         <select name="server" id="server" onchange="chooseServer()">
             <option value="//cdnetworks-paris.red5.org" selected>Paris</option>
             <option value="//cdnetworks-la.red5.org">Los Angeles</option>
         </select>
     </div>
-
-
-    <!--<div class="places">-->
-    <!--<div class="publish-place">New York</div>-->
-    <!--<div class="publish-place">Paris</div>-->
-    <!--</div>-->
 </div>
 
 <script src='https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js'></script>
 <script type="text/javascript" src="scripts/main.js"></script>
+<script type="text/javascript" src="https://geoip-db.com/json/geoip.php?jsonp=getCity"></script>
 <script async type="text/javascript" src="scripts/red5pro-sdk.min.js"></script>
 </body>
 </html>

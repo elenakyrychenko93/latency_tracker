@@ -6,6 +6,8 @@ let timer = document.getElementById("timer");
 let delay = document.getElementById("delay");
 let error = document.getElementById("error");
 let main = document.getElementById("main");
+let city = document.getElementById("publish-place");
+let container = document.getElementById("container");
 let errorResolution = "Your`s webCam doesn`t supports this resolution. Please, choose resolution lower.";
 let vids = document.getElementsByTagName('video');
 
@@ -15,7 +17,7 @@ let sizes = [
     {width: 1280, height: 720, className: 'medium'},
     {width: 1920, height: 1080, className: 'large'}
 ];
-let currentSize = {width: 640, height: 480};
+let currentSize = {width: 640, height: 480, className: 'small'};
 let currentQuality = 512;
 let currentVideoClass = 'small';
 
@@ -74,6 +76,8 @@ window.onload = () => {
                         console.groupEnd();
                     });
                     console.log('publish');
+                    removeContainerSize();
+                    setContainerSize(currentSize.className);
                     setMainBlockStyles();
                     return publish();
                 }).catch((error) => {
@@ -120,8 +124,8 @@ window.onload = () => {
                     })
                     .then((subscriber) => {
                         console.log('Subscribed');
-                        removeSize();
-                        setSize(currentVideoClass);
+                        removeVideoSize();
+                        setVideoSize(currentVideoClass);
                         // initSingular();
                         // setSingular('0gLC3KNfPudPCd04dNl4DQ');
                     })
@@ -133,27 +137,20 @@ window.onload = () => {
         })(window.red5prosdk);
     };
     initStream(serverURL);
-    // initStreams();
 };
 
 window.addEventListener('beforeunload', (event) => {
     event.returnValue = clearSub();
 });
 
-// async function initStreams() {
-//     await initStream('//cdnetworks-paris.red5.org', 'publisher', 'subscriber');
-//     await initStream('//cdnetworks-la.red5.org', 'publisher2', 'subscriber2');
-// }
-
 async function clearSub() {
     // overlay.hide();
-
     await window.unsubscribe();
     await window.unpublish();
 }
 
 setMainBlockStyles = () => {
-    if(currentSize.width>=1280) {
+    if (currentSize.width >= 1280) {
         main.classList.remove("large");
         main.classList.add("large");
     } else {
@@ -161,14 +158,26 @@ setMainBlockStyles = () => {
     }
 };
 
-setSize = (sizeClass) => {
+setContainerSize = (sizeClass) => {
+    container.classList.add(sizeClass);
+
+};
+
+removeContainerSize = () => {
+    for (let i = 0; i < sizes.length; i++) {
+        if (container.classList.contains(sizes[i].className)) {
+            container.classList.remove(sizes[i].className);
+        }
+    }
+};
+
+setVideoSize = (sizeClass) => {
     vids[0].classList.add(sizeClass);
     vids[1].classList.add(sizeClass);
 };
 
-removeSize = () => {
+removeVideoSize = () => {
     for (let i = 0; i < sizes.length; i++) {
-        console.log(sizes[i].className);
         if (vids[0].classList.contains(sizes[i].className)) {
             vids[0].classList.remove(sizes[i].className);
         }
@@ -254,4 +263,8 @@ chooseQuality = () => {
         initStream(serverURL);
         console.log('current Quality:', currentQuality);
     });
+};
+
+getCity = (data) => {
+    city.innerText = data.city;
 };
