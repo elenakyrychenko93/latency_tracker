@@ -10,7 +10,7 @@ let timer = document.getElementById("timer");
 let delay = document.getElementById("delay");
 let recognizeError = document.getElementById('recognize_error');
 // let anotherError = document.getElementById('another_error');
-let serverURL = '//red5pro.trembit.com';
+let serverURL = '//cdnetworks-paris.red5.org';
 
 window.onload = () => {
     initStream = (serverURL) => {
@@ -24,7 +24,7 @@ window.onload = () => {
             publisher.init({
                 host: serverURL,
                 protocol: 'wss',
-                port: 8083,
+                port: 443,
                 iceServers: [{urls: 'stun:stun2.l.google.com:19302'}],
                 app: 'live',
                 streamName: streamName,
@@ -85,7 +85,7 @@ window.onload = () => {
                 subscriber.init({
                     host: serverURL,
                     protocol: 'wss',
-                    port: 8083,
+                    port: 443,
                     iceServers: [{urls: 'stun:stun2.l.google.com:19302'}],
                     app: 'live',
                     streamName: streamName,
