@@ -9,8 +9,11 @@ let main = document.getElementById("main");
 let city = document.getElementById("publish-place");
 let container = document.getElementById("container");
 let errorResolution = "Your`s webCam doesn`t supports this resolution. Please, choose resolution lower.";
+let errorRecognize = "Looks like your webcam can`t catch time. Maybe some freezing." +
+    " Adjust the webcam so that the numbers occupy the entire width of the screen";
 let vids = document.getElementsByTagName('video');
 let spinner = document.getElementById("spinner");
+let delayTime = document.getElementById('delay');
 
 let sizes = [
     {width: 320, height: 240, className: 'smallest'},
@@ -146,6 +149,11 @@ window.onload = () => {
 window.addEventListener('beforeunload', (event) => {
     event.returnValue = clearSub();
 });
+
+showDelayTime = () => delayTime.classList.add("active");
+hideDelayTime = () => delayTime.classList.remove("active");
+
+setDelayTime = (time) => delayTime.innerText = time;
 
 async function clearSub() {
     // overlay.hide();
@@ -354,9 +362,19 @@ calculateDelay = (publisherScreenshot, subscriberScreenshot) => {
         let sub = subscriberStr.match(/\d+\.\d+/); //if no - error, and stop working
         let res = ((pub[0]-sub[0])*1000).toFixed(0);
         console.log("out", pub[0], sub[0], res);
-        deactivateSpinner();
+        hideError();
+
+        if(res>4000 || res<100 || !res) {
+            showError(errorRecognize);
+            deactivateSpinner();
+        } else {
+            setDelayTime(res + ' milliseconds');
+            deactivateSpinner();
+        }
     } catch (err) {
         console.log(err);
+        showError(errorRecognize);
+        deactivateSpinner();
     }
 
 };

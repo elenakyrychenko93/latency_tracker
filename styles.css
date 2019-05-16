@@ -30,7 +30,26 @@ h3 {
     display: block;
     margin: 0 0 20px;
 }
-
+.actions-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+button {
+    padding: 10px 20px;
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    text-transform: unset;
+    font-weight: bold;
+    font-family: sans-serif;
+    cursor: pointer;
+    transition: .3s;
+}
+button:hover {
+    background: white;
+    color: black;
+}
 .toggle-block {
     color: white;
     display: flex;
@@ -96,12 +115,17 @@ h3 {
 }
 
 .delay-time {
-    display: none;
+    background: black;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 26px;
+    /*display: none;*/
 }
 
-.delay-time.active {
-    display: block;
-}
+/*.delay-time.active {*/
+    /*display: block;*/
+/*}*/
 
 #delay {
     font-weight: bold;
@@ -432,9 +456,10 @@ video.large {
 #error {
     color: #e42b25;
     padding: 20px 0;
-    font-size: 23px;
     font-weight: bold;
     text-align: center;
+    width: 80%;
+    margin: auto;
     display: none;
 }
 
