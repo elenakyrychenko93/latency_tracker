@@ -22,25 +22,26 @@
         <div>
             <h3>Video quality</h3>
             <select name="quality" id="quality" onchange="chooseQuality()">
-                <option value="256">256</option>
-                <option value="512" selected>512</option>
-                <option value="1024">1024</option>
-                <option value="2048">2048</option>
+                <option value="256">256 kbps</option>
+                <option value="512" selected>512 kbps</option>
+                <option value="1024">1024 kbps</option>
+                <option value="2048">2048 kbps</option>
             </select>
         </div>
 
         <div>
-            <h3>Video size</h3>
+            <h3>Video resolution</h3>
             <select name="size" id="size" onchange="chooseVideoSize()">
-                <option value="320">320:240</option>
-                <option value="640" selected>640:480</option>
-                <option value="1280">1280:720</option>
-                <option value="1920">1920:1080</option>
+                <option value="320">320 x 240</option>
+                <option value="640" selected>640 x 480</option>
+                <option value="1280">1280 x 720</option>
+                <option value="1920">1920 x 1080</option>
             </select>
         </div>
-
-        <button type="button" onclick="takeScreenshot">Take screenshot</button>
+        <button type="button" onclick="recognizeScreen()">Take screenshot</button>
     </div>
+
+    <div id="error" class="error"></div>
 
     <div class="lds-ellipsis" id="spinner">
         <div></div>
@@ -48,8 +49,6 @@
         <div></div>
         <div></div>
     </div>
-
-    <div id="error" class="error"></div>
 
     <div id="main" class="main">
         <div class="publisher">

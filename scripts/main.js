@@ -128,7 +128,7 @@ window.onload = () => {
                         removeContainerSize();
                         setContainerSize(currentSize.className);
                         setMainBlockStyles();
-                        setTimeout(deactivateSpinner(), 3000);
+                        deactivateSpinner();
 
                         // initSingular();
                         // setSingular('0gLC3KNfPudPCd04dNl4DQ');
@@ -190,12 +190,14 @@ removeVideoSize = () => {
 
 activateSpinner = () => {
     if(!spinner.classList.contains('active')) {
-        spinner.classList.add('active')
+        spinner.classList.add('active');
+        // spinner.style.marginTop = + currentSize.height/2 + 'px';
     }
 };
 
 deactivateSpinner = () => {
-    spinner.classList.remove('active')
+    spinner.classList.remove('active');
+    // spinner.style.marginTop = "0px"
 };
 
 showError = (errorText) => {
@@ -221,7 +223,6 @@ setSingular = (compToken) => {
         // called when content finished loading
         // console.log('delay', params);
         // overlay.setDelay(5500);
-
         console.log("Singular Overlay Content Loaded - Success");
     });
     // overlay.setDelay(5500);
@@ -286,6 +287,76 @@ getCity = (data) => {
     city.innerText = data.city;
 };
 
-takeScreenshot = () => {
+// takeScreenshot = () => {
+//
+// };
+//
+// calculateDelay = (currentTime, result) => {
+//     spinner.classList.remove("active");
+//     console.log(currentTime, result);
+//     let delayTime = currentTime - result;
+//     if (!isNaN(currentTime) && !isNaN(result) && result && result !== '') {
+//         hideError(recognizeError);
+//         delayTime < 0.1 ? delay.childNodes[0].nodeValue = "less than 100 milliseconds" :
+//             delay.childNodes[0].nodeValue = (delayTime * 1000).toFixed(0) + ' milliseconds';
+//     } else if (delayTime > 10) {
+//         spinner.classList.add("active");
+//     }
+//     else if (isNaN(result)) {
+//         showError(recognizeError); //Can use anotherError like showError(anotherError) in any place
+//     }
+//     else {
+//         hideError(recognizeError);
+//         spinner.classList.add("active");
+//     }
+// };
+
+progressUpdate = (packet) => {
+    let status = document.createElement('div');
+    status.className = 'status';
+    status.appendChild(document.createTextNode(packet.status));
+    if (packet.status == 'done') {
+        result = packet.data.text;
+    }
+};
+
+recognizeScreen = () => {
+    let publisherScreenshot = document.getElementById("publisher");
+    let subscriberScreenshot = document.getElementById("subscriber");
+    activateSpinner();
+
+    Tesseract.recognize(subscriberScreenshot)
+        .progress(function (packet) {
+            progressUpdate(packet);
+        })
+        .then(function (data) {
+            progressUpdate({status: 'done', data: data});
+            subscriberScreenshot = result;
+            Tesseract.recognize(publisherScreenshot)
+                .progress(function (packet) {
+                    progressUpdate(packet);
+                })
+                .then(function (data) {
+                    progressUpdate({status: 'done', data: data});
+                    publisherScreenshot = result;
+                    calculateDelay(publisherScreenshot, subscriberScreenshot);
+                });
+        });
+};
+
+calculateDelay = (publisherScreenshot, subscriberScreenshot) => {
+    let subscriberStr = subscriberScreenshot.replace(/[',"]/g, ".").replace(/[^\.\d]/g, "");
+    let publisherStr = publisherScreenshot.replace(/[',"]/g, ".").replace(/[^\.\d]/g, "");
+    console.log('get', publisherScreenshot, subscriberScreenshot);
+
+    try {
+        let pub = publisherStr.match(/\d+\.\d+/); //if no - error, and stop working
+        let sub = subscriberStr.match(/\d+\.\d+/); //if no - error, and stop working
+        let res = ((pub[0]-sub[0])*1000).toFixed(0);
+        console.log("out", pub[0], sub[0], res);
+        deactivateSpinner();
+    } catch (err) {
+        console.log(err);
+    }
 
 };
