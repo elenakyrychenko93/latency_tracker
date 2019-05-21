@@ -3,6 +3,7 @@ let server = document.getElementById('server');
 let size = document.getElementById('size');
 let quality = document.getElementById('quality');
 let timer = document.getElementById("timer");
+let ticInterval;
 let delay = document.getElementById("delay");
 let error = document.getElementById("error");
 let main = document.getElementById("main");
@@ -132,6 +133,8 @@ window.onload = () => {
                         setContainerSize(currentSize.className);
                         setMainBlockStyles();
                         deactivateSpinner();
+                        // showTime();
+
 
                         // initSingular();
                         // setSingular('0gLC3KNfPudPCd04dNl4DQ');
@@ -149,6 +152,18 @@ window.onload = () => {
 window.addEventListener('beforeunload', (event) => {
     event.returnValue = clearSub();
 });
+
+// showTime = () => {
+//     let startTime = Date.now();
+//     ticInterval = setInterval(function () {
+//         let elapsedTime = Date.now() - startTime;
+//         if (elapsedTime > 99999) {
+//             startTime = Date.now();
+//         }
+//         timer.innerHTML = (elapsedTime / 1000).toFixed(2);
+//     }, 10)
+// };
+
 
 showDelayTime = () => delayTime.classList.add("active");
 hideDelayTime = () => delayTime.classList.remove("active");
@@ -329,27 +344,40 @@ progressUpdate = (packet) => {
 };
 
 recognizeScreen = () => {
-    let publisherScreenshot = document.getElementById("publisher");
-    let subscriberScreenshot = document.getElementById("subscriber");
-    activateSpinner();
+    // activateSpinner();
+    // let currentTime = timer.innerHTML;
+    // Tesseract.recognize(document.getElementById("subscriber"))
+    //             .progress(function (packet) {
+    //                 progressUpdate(packet);
+    //             })
+    //             .then(function (data) {
+    //                 progressUpdate({status: 'done', data: data});
+    //                 calculateDelay(currentTime, result);
+    //             });
 
-    Tesseract.recognize(subscriberScreenshot)
-        .progress(function (packet) {
-            progressUpdate(packet);
-        })
-        .then(function (data) {
-            progressUpdate({status: 'done', data: data});
-            subscriberScreenshot = result;
-            Tesseract.recognize(publisherScreenshot)
-                .progress(function (packet) {
-                    progressUpdate(packet);
-                })
-                .then(function (data) {
-                    progressUpdate({status: 'done', data: data});
-                    publisherScreenshot = result;
-                    calculateDelay(publisherScreenshot, subscriberScreenshot);
-                });
-        });
+    // let publisherScreenshot = document.getElementById("publisher");
+    // let subscriberScreenshot = document.getElementById("subscriber");
+    // html2canvas(document.getElementById('main'), {allowTaint: true, foreignObjectRendering: true}).then(canvas => {
+    //     document.body.appendChild(canvas);
+    // });
+    // activateSpinner();
+    // Tesseract.recognize(subscriberScreenshot)
+    //     .progress(function (packet) {
+    //         progressUpdate(packet);
+    //     })
+    //     .then(function (data) {
+    //         progressUpdate({status: 'done', data: data});
+    //         subscriberScreenshot = result;
+    //         Tesseract.recognize(publisherScreenshot)
+    //             .progress(function (packet) {
+    //                 progressUpdate(packet);
+    //             })
+    //             .then(function (data) {
+    //                 progressUpdate({status: 'done', data: data});
+    //                 publisherScreenshot = result;
+    //                 calculateDelay(publisherScreenshot, subscriberScreenshot);
+    //             });
+    //     });
 };
 
 calculateDelay = (publisherScreenshot, subscriberScreenshot) => {
@@ -358,8 +386,8 @@ calculateDelay = (publisherScreenshot, subscriberScreenshot) => {
     console.log('get', publisherScreenshot, subscriberScreenshot);
 
     try {
-        let pub = publisherStr.match(/\d+\.\d+/); //if no - error, and stop working
-        let sub = subscriberStr.match(/\d+\.\d+/); //if no - error, and stop working
+        let pub = publisherStr.match(/\d+\.\d+/);
+        let sub = subscriberStr.match(/\d+\.\d+/);
         let res = ((pub[0]-sub[0])*1000).toFixed(0);
         console.log("out", pub[0], sub[0], res);
         hideError();

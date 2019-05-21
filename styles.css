@@ -189,8 +189,9 @@ button:hover {
     /*display: none;*/
 }
 
-#red5pro-publisher {
+#publisher {
     /*display: none;*/
+    /*visibility: hidden;*/
 }
 
 /*.red5pro-media-container {*/
