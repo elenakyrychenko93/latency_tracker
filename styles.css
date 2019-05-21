@@ -401,7 +401,7 @@ video.large {
 #error {
     color: #e42b25;
     padding: 20px 0;
-    font-size: 23px;
+    font-size: 18px;
     font-weight: bold;
     text-align: center;
     display: none;
@@ -427,7 +427,7 @@ video.large {
     }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 780px) {
     .container.smallest {
         width: auto !important;
     }
