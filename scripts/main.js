@@ -3,18 +3,14 @@ let server = document.getElementById('server');
 let size = document.getElementById('size');
 let quality = document.getElementById('quality');
 let timer = document.getElementById("timer");
-let ticInterval;
 let delay = document.getElementById("delay");
 let error = document.getElementById("error");
 let main = document.getElementById("main");
 let city = document.getElementById("publish-place");
 let container = document.getElementById("container");
 let errorResolution = "Your`s webCam doesn`t supports this resolution. Please, choose resolution lower.";
-let errorRecognize = "Looks like your webcam can`t catch time. Maybe some freezing." +
-    " Adjust the webcam so that the numbers occupy the entire width of the screen";
 let vids = document.getElementsByTagName('video');
 let spinner = document.getElementById("spinner");
-let delayTime = document.getElementById('delay');
 
 let sizes = [
     {width: 320, height: 240, className: 'smallest'},
@@ -34,7 +30,6 @@ let options = {
     showPreloader: false,
     aspect: ''
 };
-let overlay;
 
 window.onload = () => {
     initStream = (serverURL) => {
@@ -133,11 +128,6 @@ window.onload = () => {
                         setContainerSize(currentSize.className);
                         setMainBlockStyles();
                         deactivateSpinner();
-                        // showTime();
-
-
-                        // initSingular();
-                        // setSingular('0gLC3KNfPudPCd04dNl4DQ');
                     })
                     .catch(function (error) {
                         console.error(error);
@@ -153,25 +143,7 @@ window.addEventListener('beforeunload', (event) => {
     event.returnValue = clearSub();
 });
 
-// showTime = () => {
-//     let startTime = Date.now();
-//     ticInterval = setInterval(function () {
-//         let elapsedTime = Date.now() - startTime;
-//         if (elapsedTime > 99999) {
-//             startTime = Date.now();
-//         }
-//         timer.innerHTML = (elapsedTime / 1000).toFixed(2);
-//     }, 10)
-// };
-
-
-showDelayTime = () => delayTime.classList.add("active");
-hideDelayTime = () => delayTime.classList.remove("active");
-
-setDelayTime = (time) => delayTime.innerText = time;
-
 async function clearSub() {
-    // overlay.hide();
     await window.unsubscribe();
     await window.unpublish();
 }
@@ -212,15 +184,13 @@ removeVideoSize = () => {
 };
 
 activateSpinner = () => {
-    if(!spinner.classList.contains('active')) {
+    if (!spinner.classList.contains('active')) {
         spinner.classList.add('active');
-        // spinner.style.marginTop = + currentSize.height/2 + 'px';
     }
 };
 
 deactivateSpinner = () => {
     spinner.classList.remove('active');
-    // spinner.style.marginTop = "0px"
 };
 
 showError = (errorText) => {
@@ -231,25 +201,6 @@ showError = (errorText) => {
 hideError = () => {
     error.innerHTML = "";
     error.classList.remove("active");
-};
-
-initSingular = () => {
-    overlay = SingularOverlay('#SingularOverlay', options, (params) => {
-        console.log("Singular Overlay Init - Success");
-    });
-};
-
-setSingular = (compToken) => {
-    overlay.setContent({
-        compToken: compToken
-    }, (params) => {
-        // called when content finished loading
-        // console.log('delay', params);
-        // overlay.setDelay(5500);
-        console.log("Singular Overlay Content Loaded - Success");
-    });
-    // overlay.setDelay(5500);
-    overlay.videoSegment(4000); //looks like max delay 4000
 };
 
 chooseServer = () => {
@@ -308,101 +259,4 @@ chooseQuality = () => {
 
 getCity = (data) => {
     city.innerText = data.city;
-};
-
-// takeScreenshot = () => {
-//
-// };
-//
-// calculateDelay = (currentTime, result) => {
-//     spinner.classList.remove("active");
-//     console.log(currentTime, result);
-//     let delayTime = currentTime - result;
-//     if (!isNaN(currentTime) && !isNaN(result) && result && result !== '') {
-//         hideError(recognizeError);
-//         delayTime < 0.1 ? delay.childNodes[0].nodeValue = "less than 100 milliseconds" :
-//             delay.childNodes[0].nodeValue = (delayTime * 1000).toFixed(0) + ' milliseconds';
-//     } else if (delayTime > 10) {
-//         spinner.classList.add("active");
-//     }
-//     else if (isNaN(result)) {
-//         showError(recognizeError); //Can use anotherError like showError(anotherError) in any place
-//     }
-//     else {
-//         hideError(recognizeError);
-//         spinner.classList.add("active");
-//     }
-// };
-
-progressUpdate = (packet) => {
-    let status = document.createElement('div');
-    status.className = 'status';
-    status.appendChild(document.createTextNode(packet.status));
-    if (packet.status == 'done') {
-        result = packet.data.text;
-    }
-};
-
-recognizeScreen = () => {
-    // activateSpinner();
-    // let currentTime = timer.innerHTML;
-    // Tesseract.recognize(document.getElementById("subscriber"))
-    //             .progress(function (packet) {
-    //                 progressUpdate(packet);
-    //             })
-    //             .then(function (data) {
-    //                 progressUpdate({status: 'done', data: data});
-    //                 calculateDelay(currentTime, result);
-    //             });
-
-    // let publisherScreenshot = document.getElementById("publisher");
-    // let subscriberScreenshot = document.getElementById("subscriber");
-    // html2canvas(document.getElementById('main'), {allowTaint: true, foreignObjectRendering: true}).then(canvas => {
-    //     document.body.appendChild(canvas);
-    // });
-    // activateSpinner();
-    // Tesseract.recognize(subscriberScreenshot)
-    //     .progress(function (packet) {
-    //         progressUpdate(packet);
-    //     })
-    //     .then(function (data) {
-    //         progressUpdate({status: 'done', data: data});
-    //         subscriberScreenshot = result;
-    //         Tesseract.recognize(publisherScreenshot)
-    //             .progress(function (packet) {
-    //                 progressUpdate(packet);
-    //             })
-    //             .then(function (data) {
-    //                 progressUpdate({status: 'done', data: data});
-    //                 publisherScreenshot = result;
-    //                 calculateDelay(publisherScreenshot, subscriberScreenshot);
-    //             });
-    //     });
-};
-
-calculateDelay = (publisherScreenshot, subscriberScreenshot) => {
-    let subscriberStr = subscriberScreenshot.replace(/[',"]/g, ".").replace(/[^\.\d]/g, "");
-    let publisherStr = publisherScreenshot.replace(/[',"]/g, ".").replace(/[^\.\d]/g, "");
-    console.log('get', publisherScreenshot, subscriberScreenshot);
-
-    try {
-        let pub = publisherStr.match(/\d+\.\d+/);
-        let sub = subscriberStr.match(/\d+\.\d+/);
-        let res = ((pub[0]-sub[0])*1000).toFixed(0);
-        console.log("out", pub[0], sub[0], res);
-        hideError();
-
-        if(res>4000 || res<100 || !res) {
-            showError(errorRecognize);
-            deactivateSpinner();
-        } else {
-            setDelayTime(res + ' milliseconds');
-            deactivateSpinner();
-        }
-    } catch (err) {
-        console.log(err);
-        showError(errorRecognize);
-        deactivateSpinner();
-    }
-
 };
