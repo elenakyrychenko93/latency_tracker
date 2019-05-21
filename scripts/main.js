@@ -212,7 +212,7 @@ removeVideoSize = () => {
 };
 
 activateSpinner = () => {
-    if(!spinner.classList.contains('active')) {
+    if (!spinner.classList.contains('active')) {
         spinner.classList.add('active');
         // spinner.style.marginTop = + currentSize.height/2 + 'px';
     }
@@ -355,44 +355,46 @@ recognizeScreen = () => {
     //                 calculateDelay(currentTime, result);
     //             });
 
-    // let publisherScreenshot = document.getElementById("publisher");
-    // let subscriberScreenshot = document.getElementById("subscriber");
+
+    let publisherScreenshot = document.getElementById("publisher");
+    let subscriberScreenshot = document.getElementById("subscriber");
     // html2canvas(document.getElementById('main'), {allowTaint: true, foreignObjectRendering: true}).then(canvas => {
     //     document.body.appendChild(canvas);
     // });
-    // activateSpinner();
-    // Tesseract.recognize(subscriberScreenshot)
-    //     .progress(function (packet) {
-    //         progressUpdate(packet);
-    //     })
-    //     .then(function (data) {
-    //         progressUpdate({status: 'done', data: data});
-    //         subscriberScreenshot = result;
-    //         Tesseract.recognize(publisherScreenshot)
-    //             .progress(function (packet) {
-    //                 progressUpdate(packet);
-    //             })
-    //             .then(function (data) {
-    //                 progressUpdate({status: 'done', data: data});
-    //                 publisherScreenshot = result;
-    //                 calculateDelay(publisherScreenshot, subscriberScreenshot);
-    //             });
-    //     });
+    activateSpinner();
+    let startPublish = new Date();
+    Tesseract.recognize(publisherScreenshot)
+        .then(function (data) {
+            progressUpdate({status: 'done', data: data});
+
+            let endPublish = new Date();
+            let delayScreen = (endPublish - startPublish)/1000;
+            publisherScreenshot = result;
+
+            console.log(publisherScreenshot, delayScreen);
+            Tesseract.recognize(subscriberScreenshot)
+                .then(function (data) {
+                    progressUpdate({status: 'done', data: data});
+                    subscriberScreenshot = result;
+                    calculateDelay(publisherScreenshot, subscriberScreenshot, delayScreen);
+                });
+        });
 };
 
-calculateDelay = (publisherScreenshot, subscriberScreenshot) => {
-    let subscriberStr = subscriberScreenshot.replace(/[',"]/g, ".").replace(/[^\.\d]/g, "");
+calculateDelay = (publisherScreenshot, subscriberScreenshot, delayScreen) => {
+    console.log('get', delayScreen, publisherScreenshot, subscriberScreenshot);
+
     let publisherStr = publisherScreenshot.replace(/[',"]/g, ".").replace(/[^\.\d]/g, "");
-    console.log('get', publisherScreenshot, subscriberScreenshot);
+    let subscriberStr = subscriberScreenshot.replace(/[',"]/g, ".").replace(/[^\.\d]/g, "");
 
     try {
         let pub = publisherStr.match(/\d+\.\d+/);
         let sub = subscriberStr.match(/\d+\.\d+/);
-        let res = ((pub[0]-sub[0])*1000).toFixed(0);
-        console.log("out", pub[0], sub[0], res);
+        let res = (((+pub[0] + delayScreen) - +sub[0]) * 1000).toFixed(0);
+        console.log("out", +pub[0], +sub[0], delayScreen, res);
         hideError();
 
-        if(res>4000 || res<100 || !res) {
+        if (res > 4000 || res < 100 || !res) {
             showError(errorRecognize);
             deactivateSpinner();
         } else {
