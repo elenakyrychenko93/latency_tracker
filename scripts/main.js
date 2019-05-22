@@ -314,7 +314,7 @@ calculateDelay = (publisherScreenshot, subscriberScreenshot, delayScreen) => {
         console.log("out", +pub[0], +sub[0], delayScreen, res);
         hideError();
 
-        if (res > 4000 || res < 100 || !res) {
+        if (res > 4000 || res < 40 || !res) {
             showError(errorRecognize);
             deactivateSpinner();
         } else {
