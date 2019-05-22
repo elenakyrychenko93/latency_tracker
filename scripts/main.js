@@ -3,7 +3,6 @@ let server = document.getElementById('server');
 let size = document.getElementById('size');
 let quality = document.getElementById('quality');
 let timer = document.getElementById("timer");
-let ticInterval;
 let delay = document.getElementById("delay");
 let error = document.getElementById("error");
 let main = document.getElementById("main");
@@ -133,11 +132,6 @@ window.onload = () => {
                         setContainerSize(currentSize.className);
                         setMainBlockStyles();
                         deactivateSpinner();
-                        // showTime();
-
-
-                        // initSingular();
-                        // setSingular('0gLC3KNfPudPCd04dNl4DQ');
                     })
                     .catch(function (error) {
                         console.error(error);
@@ -152,26 +146,12 @@ window.onload = () => {
 window.addEventListener('beforeunload', (event) => {
     event.returnValue = clearSub();
 });
-
-// showTime = () => {
-//     let startTime = Date.now();
-//     ticInterval = setInterval(function () {
-//         let elapsedTime = Date.now() - startTime;
-//         if (elapsedTime > 99999) {
-//             startTime = Date.now();
-//         }
-//         timer.innerHTML = (elapsedTime / 1000).toFixed(2);
-//     }, 10)
-// };
-
-
 showDelayTime = () => delayTime.classList.add("active");
 hideDelayTime = () => delayTime.classList.remove("active");
 
 setDelayTime = (time) => delayTime.innerText = time;
 
 async function clearSub() {
-    // overlay.hide();
     await window.unsubscribe();
     await window.unpublish();
 }
@@ -214,13 +194,11 @@ removeVideoSize = () => {
 activateSpinner = () => {
     if (!spinner.classList.contains('active')) {
         spinner.classList.add('active');
-        // spinner.style.marginTop = + currentSize.height/2 + 'px';
     }
 };
 
 deactivateSpinner = () => {
     spinner.classList.remove('active');
-    // spinner.style.marginTop = "0px"
 };
 
 showError = (errorText) => {
@@ -231,25 +209,6 @@ showError = (errorText) => {
 hideError = () => {
     error.innerHTML = "";
     error.classList.remove("active");
-};
-
-initSingular = () => {
-    overlay = SingularOverlay('#SingularOverlay', options, (params) => {
-        console.log("Singular Overlay Init - Success");
-    });
-};
-
-setSingular = (compToken) => {
-    overlay.setContent({
-        compToken: compToken
-    }, (params) => {
-        // called when content finished loading
-        // console.log('delay', params);
-        // overlay.setDelay(5500);
-        console.log("Singular Overlay Content Loaded - Success");
-    });
-    // overlay.setDelay(5500);
-    overlay.videoSegment(4000); //looks like max delay 4000
 };
 
 chooseServer = () => {
@@ -310,30 +269,6 @@ getCity = (data) => {
     city.innerText = data.city;
 };
 
-// takeScreenshot = () => {
-//
-// };
-//
-// calculateDelay = (currentTime, result) => {
-//     spinner.classList.remove("active");
-//     console.log(currentTime, result);
-//     let delayTime = currentTime - result;
-//     if (!isNaN(currentTime) && !isNaN(result) && result && result !== '') {
-//         hideError(recognizeError);
-//         delayTime < 0.1 ? delay.childNodes[0].nodeValue = "less than 100 milliseconds" :
-//             delay.childNodes[0].nodeValue = (delayTime * 1000).toFixed(0) + ' milliseconds';
-//     } else if (delayTime > 10) {
-//         spinner.classList.add("active");
-//     }
-//     else if (isNaN(result)) {
-//         showError(recognizeError); //Can use anotherError like showError(anotherError) in any place
-//     }
-//     else {
-//         hideError(recognizeError);
-//         spinner.classList.add("active");
-//     }
-// };
-
 progressUpdate = (packet) => {
     let status = document.createElement('div');
     status.className = 'status';
@@ -344,39 +279,24 @@ progressUpdate = (packet) => {
 };
 
 recognizeScreen = () => {
-    // activateSpinner();
-    // let currentTime = timer.innerHTML;
-    // Tesseract.recognize(document.getElementById("subscriber"))
-    //             .progress(function (packet) {
-    //                 progressUpdate(packet);
-    //             })
-    //             .then(function (data) {
-    //                 progressUpdate({status: 'done', data: data});
-    //                 calculateDelay(currentTime, result);
-    //             });
-
-
     let publisherScreenshot = document.getElementById("publisher");
     let subscriberScreenshot = document.getElementById("subscriber");
-    // html2canvas(document.getElementById('main'), {allowTaint: true, foreignObjectRendering: true}).then(canvas => {
-    //     document.body.appendChild(canvas);
-    // });
     activateSpinner();
-    let startPublish = new Date();
+    let startPublishRec = new Date();
     Tesseract.recognize(publisherScreenshot)
         .then(function (data) {
             progressUpdate({status: 'done', data: data});
 
-            let endPublish = new Date();
-            let delayScreen = (endPublish - startPublish)/1000;
+            let endPublishRec = new Date();
+            let delayPublishScreen = (endPublishRec - startPublishRec)/1000;
             publisherScreenshot = result;
 
-            console.log(publisherScreenshot, delayScreen);
+            console.log(publisherScreenshot, delayPublishScreen);
             Tesseract.recognize(subscriberScreenshot)
                 .then(function (data) {
                     progressUpdate({status: 'done', data: data});
                     subscriberScreenshot = result;
-                    calculateDelay(publisherScreenshot, subscriberScreenshot, delayScreen);
+                    calculateDelay(publisherScreenshot, subscriberScreenshot, delayPublishScreen);
                 });
         });
 };

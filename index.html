@@ -6,10 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles.css">
     <script src="https://webrtchacks.github.io/adapter/adapter-latest.js"></script>
-    <script src="https://app.singular.live/libs/singularoverlay/0.1.0/singularoverlay.js"></script>
-
 </head>
 <body>
+<!--instruction - https://docs.google.com/document/d/1k8GxfFJJk2lzj73MvIk4Lxy4-yj7UxG08OeK-ELNczs/edit#heading=h.iebgkta3bzyo-->
 <div class="header">
     <div class="header_container">
         <img id="red5pro-logo" height="50px" src="images/Red5Pro_SME.png" alt="red5pro_logo">
@@ -40,7 +39,10 @@
             </select>
         </div>
     </div>
-    <button type="button" onclick="recognizeScreen()">calculate delay</button>
+    <div>
+        <a href="https://trembit.com/timer/index.html" target="_blank">open timer</a>
+        <button type="button" onclick="recognizeScreen()">calculate delay</button>
+    </div>
 </div>
 
 
@@ -60,11 +62,9 @@
 
     <div id="main" class="main">
         <div class="publisher">
-            <!--<div id="timer" class="clock">0</div>-->
             <video id="publisher" crossorigin="anonymous" class="" autoplay muted></video>
         </div>
         <div class="subscriber">
-            <!--<div id="SingularOverlay"></div>-->
             <video id="subscriber" crossorigin="anonymous" class="" autoplay muted></video>
         </div>
     </div>

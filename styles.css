@@ -33,8 +33,23 @@ h3 {
 .actions-block {
     display: flex;
     justify-content: space-between;
-    align-items: center;
 }
+
+a {
+    display: block;
+    padding: 0 10px 10px;
+    text-align: center;
+    color: #edb300;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: .9;
+    transition: .3s;
+}
+
+a:hover {
+    opacity: 1;
+}
+
 button {
     padding: 10px 20px;
     background: transparent;
