@@ -286,12 +286,9 @@ recognizeScreen = () => {
     Tesseract.recognize(publisherScreenshot)
         .then(function (data) {
             progressUpdate({status: 'done', data: data});
-
+            publisherScreenshot = result;
             let endPublishRec = new Date();
             let delayPublishScreen = (endPublishRec - startPublishRec)/1000;
-            publisherScreenshot = result;
-
-            console.log(publisherScreenshot, delayPublishScreen);
             Tesseract.recognize(subscriberScreenshot)
                 .then(function (data) {
                     progressUpdate({status: 'done', data: data});
