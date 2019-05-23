@@ -1,4 +1,4 @@
-let serverURL = '//cdnetworks-paris.red5.org';
+let serverURL = '//red5pro.trembit.com';
 let server = document.getElementById('server');
 let size = document.getElementById('size');
 let quality = document.getElementById('quality');
@@ -141,6 +141,12 @@ window.onload = () => {
         })(window.red5prosdk);
     };
     initStream(serverURL);
+};
+
+document.onkeydown = function (event) {
+    if (event.keyCode == 67) { //cC
+        recognizeScreen();
+    }
 };
 
 window.addEventListener('beforeunload', (event) => {
