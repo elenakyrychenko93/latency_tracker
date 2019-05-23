@@ -12,6 +12,19 @@ body {
     background: url("images/dot.png") repeat;
 }
 
+.end-stream-in {
+    padding: 10px;
+    text-align: center;
+    color: #d02f1c;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+#deadline {
+    color: white;
+    display: inline-block;
+}
+
 .container.smallest {
     width: 700px;
 }
@@ -28,6 +41,7 @@ h3 {
     display: block;
     margin: 0 0 20px;
 }
+
 .actions-block {
     display: flex;
     justify-content: space-between;
@@ -61,9 +75,20 @@ button {
     cursor: pointer;
     transition: .3s;
 }
+
 button:hover {
     background: white;
     color: black;
+}
+.action-buttons {
+    display: flex;
+}
+#startStream {
+    display: none;
+    margin-right: 15px;
+}
+#startStream.active {
+    display: block;
 }
 .toggle-block {
     color: white;
@@ -373,7 +398,7 @@ pre {
 .places {
     display: flex;
     justify-content: space-between;
-    padding: 20px 0;
+    padding: 15px 0 0;
     font-size: 16px;
     color: #adadad;
     font-weight: bold;
@@ -448,7 +473,7 @@ video.large {
     display: block;
 }
 
-@media (max-width: 1380px) {
+@media (max-width: 1395px) {
     .container {
         width: auto !important;
         max-width: 100%;
@@ -480,7 +505,15 @@ video.large {
     #main {
         flex-direction: column;
     }
+
     #spinner {
         top: -50px;
+    }
+    .actions-block {
+        margin-bottom: 10px;
+        flex-direction: column;
+    }
+    .action-buttons {
+        flex-direction: column;
     }
 }

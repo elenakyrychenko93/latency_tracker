@@ -1,4 +1,5 @@
-let serverURL = '//cdnetworks-paris.red5.org';
+let serverURL = '//red5pro.trembit.com';
+let startStream = document.getElementById('startStream');
 let server = document.getElementById('server');
 let size = document.getElementById('size');
 let quality = document.getElementById('quality');
@@ -14,7 +15,6 @@ let errorRecognize = "Looks like your webcam can`t catch time. Maybe some freezi
 let vids = document.getElementsByTagName('video');
 let spinner = document.getElementById("spinner");
 let delayTime = document.getElementById('delay');
-
 let sizes = [
     {width: 320, height: 240, className: 'smallest'},
     {width: 640, height: 480, className: 'small'},
@@ -24,6 +24,7 @@ let sizes = [
 let currentSize = {width: 640, height: 480, className: 'small'};
 let currentQuality = 512;
 let currentVideoClass = 'small';
+let ticInterval;
 
 let options = {
     class: 'iFrameClass',
@@ -33,7 +34,6 @@ let options = {
     showPreloader: false,
     aspect: ''
 };
-let overlay;
 
 window.onload = () => {
     initStream = (serverURL) => {
@@ -132,6 +132,10 @@ window.onload = () => {
                         setContainerSize(currentSize.className);
                         setMainBlockStyles();
                         deactivateSpinner();
+                        hideStartStreamB();
+                        size.disabled = false;
+                        quality.disabled = false;
+                        showTime();
                     })
                     .catch(function (error) {
                         console.error(error);
@@ -143,15 +147,71 @@ window.onload = () => {
     initStream(serverURL);
 };
 
+showTime = () => {
+    let countDownDate = new Date().setMinutes(new Date().getMinutes() + 3);
+    ticInterval = setInterval(function () {
+
+        let now = new Date().getTime();
+        let distance = countDownDate - now;
+        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        minutes = checkTime(minutes);
+        seconds = checkTime(seconds);
+        document.getElementById("deadline").innerHTML = minutes + ":" + seconds;
+        endTime(distance);
+
+    }, 1000);
+};
+
+endTime = (distance) => {
+    if (distance < 0) {
+        clearInterval(ticInterval);
+        clearSub().then(() => {
+            document.getElementById("deadline").innerHTML = "EXPIRED. Stream ended";
+            showStartStreamB();
+        });
+    }
+};
+
+stopTimer = () => {
+    clearInterval(ticInterval);
+};
+
+startStreamF = () => {
+    window.initStream(serverURL);
+};
+
+checkTime = (time) => {
+    if (time < 10) {
+        return "0" + time;
+    } else {
+        return time;
+    }
+};
+
+document.onkeydown = function (event) {
+    if (event.keyCode == 67) { //cC
+        recognizeScreen();
+    }
+};
+
 window.addEventListener('beforeunload', (event) => {
     event.returnValue = clearSub();
 });
+
+showStartStreamB = () => startStream.classList.add("active");
+hideStartStreamB = () => startStream.classList.remove("active");
+
 showDelayTime = () => delayTime.classList.add("active");
 hideDelayTime = () => delayTime.classList.remove("active");
 
 setDelayTime = (time) => delayTime.innerText = time;
 
 async function clearSub() {
+    stopTimer();
+    size.disabled = true;
+    quality.disabled = true;
     await window.unsubscribe();
     await window.unpublish();
 }
@@ -230,7 +290,7 @@ chooseVideoSize = () => {
         let width = options[index].value;
         currentSize = defineSize(width);
         currentVideoClass = defineSize(width).className;
-        initStream(serverURL);
+        window.initStream(serverURL);
         console.log('current Size:', currentSize);
     });
 };
@@ -288,7 +348,7 @@ recognizeScreen = () => {
             progressUpdate({status: 'done', data: data});
             publisherScreenshot = result;
             let endPublishRec = new Date();
-            let delayPublishScreen = (endPublishRec - startPublishRec)/1000;
+            let delayPublishScreen = (endPublishRec - startPublishRec) / 1000;
             Tesseract.recognize(subscriberScreenshot)
                 .then(function (data) {
                     progressUpdate({status: 'done', data: data});

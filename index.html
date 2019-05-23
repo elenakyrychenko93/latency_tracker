@@ -39,12 +39,13 @@
             </select>
         </div>
     </div>
-    <div>
-        <button type="button" onclick="recognizeScreen()">calculate delay</button>
+    <div class="action-buttons">
+        <button type="button" id="startStream" onclick="startStreamF()">start stream</button>
+        <!--<button type="button" onclick="recognizeScreen()">calculate delay</button>-->
     </div>
 </div>
 
-
+<div class="end-stream-in">Stream will end in: <div id="deadline">not specified</div></div>
     <div id="delay-time" class="delay-time">
         <span>Latency:</span>
         <span id="delay">0</span>
@@ -69,11 +70,12 @@
     </div>
     <div class="places">
         <div id="publish-place" class="publish-place">New York</div>
-        <select name="server" id="server" onchange="chooseServer()">
-            <option value="//cdnetworks-paris.red5.org" selected>Paris</option>
-            <option value="//cdnetworks-la.red5.org">Los Angeles</option>
-            <option value="//red5pro.trembit.com">Oregon</option>
-        </select>
+        <div id="subscriber-place" class="publish-place">Oregon</div>
+        <!--<select name="server" id="server" onchange="chooseServer()">-->
+            <!--<option value="//cdnetworks-paris.red5.org">Paris</option>-->
+            <!--<option value="//cdnetworks-la.red5.org">Los Angeles</option>-->
+            <!--<option value="//red5pro.trembit.com" selected>Oregon</option>-->
+        <!--</select>-->
     </div>
 </div>
 
