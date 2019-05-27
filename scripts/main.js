@@ -4,7 +4,9 @@ let server = document.getElementById('server');
 let size = document.getElementById('size');
 let quality = document.getElementById('quality');
 let timer = document.getElementById("timer");
-let delay = document.getElementById("delay");
+let delayTime = document.getElementById("delay-time");
+let delay = document.getElementById('delay');
+let promptText = document.getElementById('prompt');
 let error = document.getElementById("error");
 let main = document.getElementById("main");
 let city = document.getElementById("publish-place");
@@ -14,7 +16,6 @@ let errorRecognize = "Looks like your webcam can`t catch time. Maybe some freezi
     " Adjust the webcam so that the numbers occupy the entire width of the screen";
 let vids = document.getElementsByTagName('video');
 let spinner = document.getElementById("spinner");
-let delayTime = document.getElementById('delay');
 let sizes = [
     {width: 320, height: 240, className: 'smallest'},
     {width: 640, height: 480, className: 'small'},
@@ -203,10 +204,16 @@ window.addEventListener('beforeunload', (event) => {
 showStartStreamB = () => startStream.classList.add("active");
 hideStartStreamB = () => startStream.classList.remove("active");
 
-showDelayTime = () => delayTime.classList.add("active");
-hideDelayTime = () => delayTime.classList.remove("active");
+showDelayBlock = () => delayTime.classList.add("active");
+hideDelayBlock = () => delayTime.classList.remove("active");
 
-setDelayTime = (time) => delayTime.innerText = time;
+showPromptBlock = () => promptText.classList.add("active");
+hidePromptBlock = () => promptText.classList.remove("active");
+
+showDelay = () => delay.classList.add("active");
+hideDelay = () => delay.classList.remove("active");
+
+setDelay = (time) => delay.innerText = time;
 
 async function clearSub() {
     stopTimer();
@@ -375,7 +382,9 @@ calculateDelay = (publisherScreenshot, subscriberScreenshot, delayScreen) => {
             showError(errorRecognize);
             deactivateSpinner();
         } else {
-            setDelayTime(res + ' milliseconds');
+            setDelay(res + ' milliseconds');
+            hidePromptBlock();
+            showDelayBlock();
             deactivateSpinner();
         }
     } catch (err) {

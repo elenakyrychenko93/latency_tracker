@@ -154,12 +154,28 @@ button:hover {
     font-size: 26px;
 }
 
-.delay-time {
+.delay-time, .prompt {
     background: black;
     color: white;
     text-align: center;
     padding: 20px;
     font-size: 26px;
+    display: none;
+}
+
+.prompt {
+    min-height: 102px;
+}
+.prompt span {
+    margin: auto;
+}
+
+.delay-time.active {
+    display: block;
+}
+.prompt.active {
+    display: flex;
+    box-sizing: border-box;
 }
 
 #delay {
