@@ -86,6 +86,8 @@ window.onload = () => {
                 }).catch((error) => {
                     console.log('getUserMedia error!', error);
                     showError(errorResolution);
+                    size.disabled = false;
+                    quality.disabled = false;
                 });
 
             })
