@@ -143,11 +143,11 @@ window.onload = () => {
     initStream(serverURL);
 };
 
-document.onkeydown = function (event) {
-    if (event.keyCode == 67) { //cC
-        recognizeScreen();
-    }
-};
+// document.onkeydown = function (event) {
+//     if (event.keyCode == 67) { //cC
+//         recognizeScreen();
+//     }
+// };
 
 window.addEventListener('beforeunload', (event) => {
     event.returnValue = clearSub();
